@@ -6,6 +6,14 @@
 #include "Players/CrunchCharacter.h"
 #include "CrunchPlayerCharacter.generated.h"
 
+
+class UInputAction;
+class UInputMappingContext;
+class USpringArmComponent;
+class UCameraComponent;
+
+struct FInputActionValue;
+
 /**
  * 
  */
@@ -13,5 +21,29 @@ UCLASS()
 class CRUNCH_API ACrunchPlayerCharacter : public ACrunchCharacter
 {
 	GENERATED_BODY()
+public:
+	ACrunchPlayerCharacter();
+	virtual void PawnClientRestart() override;
+
+
+private:
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
+	UPROPERTY(VisibleDefaultsOnly, Category = View)
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+	
+	UPROPERTY(VisibleDefaultsOnly, Category = View)
+	TObjectPtr<UCameraComponent> CameraComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputMappingContext> InputMappingContext;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> IA_Jump;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> IA_Look;
+
+	void LookInput(const FInputActionValue& InputActionValue);
 };
