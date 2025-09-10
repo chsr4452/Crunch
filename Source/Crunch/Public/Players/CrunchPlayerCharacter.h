@@ -44,6 +44,13 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_Look;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> IA_Move;
 
 	void LookInput(const FInputActionValue& InputActionValue);
+	void MoveInput(const FInputActionValue& InputActionValue);
+
+	FVector GetLookRightDir() const;
+	FVector GetMoveFwdDir() const;
 };
