@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AbilitySystemInterface.h"
 #include "CrunchCharacter.generated.h"
 
+class UAttributeSet;
+
 UCLASS()
-class CRUNCH_API ACrunchCharacter : public ACharacter
+class CRUNCH_API ACrunchCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -22,4 +25,16 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	/*******************************************************/
+	/*					Gameplay Ability				   */
+	/*******************************************************/
+public:
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {return CrunchAbilitySystemComponent;};
+private:
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> CrunchAbilitySystemComponent;
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> CrunchAttributeSet;
+
 };
