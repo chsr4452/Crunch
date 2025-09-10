@@ -13,5 +13,10 @@ UCLASS()
 class CRUNCH_API UCrunchAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
+public:
+	void InitGameplayEffects();
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effects")
+	TArray<TSubclassOf<UGameplayEffect>> InitialGameplayEffects;
 	
 };

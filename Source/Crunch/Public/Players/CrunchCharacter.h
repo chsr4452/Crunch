@@ -17,7 +17,8 @@ class CRUNCH_API ACrunchCharacter : public ACharacter, public IAbilitySystemInte
 public:
 	// Sets default values for this character's properties
 	ACrunchCharacter();
-
+	void InitAbilityActorInfoOnServer();
+	void InitAbilityActorInfoOnClient();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -30,11 +31,15 @@ public:
 	/*					Gameplay Ability				   */
 	/*******************************************************/
 public:
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {return CrunchAbilitySystemComponent;};
+	
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {return CrunchAbilitySystemComponent;}
+	
 private:
-	UPROPERTY()
+	
+	UPROPERTY(VisibleAnywhere, Category = "Ability System")
 	TObjectPtr<UAbilitySystemComponent> CrunchAbilitySystemComponent;
-	UPROPERTY()
+	
+	UPROPERTY(VisibleAnywhere, Category = "Ability System")
 	TObjectPtr<UAttributeSet> CrunchAttributeSet;
 
 };

@@ -18,6 +18,17 @@ ACrunchCharacter::ACrunchCharacter()
 
 }
 
+void ACrunchCharacter::InitAbilityActorInfoOnServer()
+{
+	CrunchAbilitySystemComponent->InitAbilityActorInfo(this, this);
+	Cast<UCrunchAbilitySystemComponent>(CrunchAbilitySystemComponent)->InitGameplayEffects();
+}
+
+void ACrunchCharacter::InitAbilityActorInfoOnClient()
+{
+	CrunchAbilitySystemComponent->InitAbilityActorInfo(this, this);
+}
+
 // Called when the game starts or when spawned
 void ACrunchCharacter::BeginPlay()
 {
