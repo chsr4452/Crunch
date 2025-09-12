@@ -15,7 +15,6 @@ ACrunchCharacter::ACrunchCharacter()
 
 	CrunchAbilitySystemComponent = CreateDefaultSubobject<UCrunchAbilitySystemComponent>("Ability System Component");
 	CrunchAttributeSet = CreateDefaultSubobject<UCrunchAttributeSet>("Attribute Set");
-
 }
 
 void ACrunchCharacter::InitAbilityActorInfoOnServer()

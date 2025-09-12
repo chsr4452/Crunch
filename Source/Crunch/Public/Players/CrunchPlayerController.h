@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "CrunchPlayerController.generated.h"
+
+class UGameplayWidget;
 class ACrunchPlayerCharacter;
 /**
  * 
@@ -20,5 +22,13 @@ public:
 	//Client Side
 	void AcknowledgePossession(APawn* InPawn) override;
 private:
+	void CreateGameplayWidget();
+	UPROPERTY()
 	TObjectPtr<ACrunchPlayerCharacter> PlayerCharacter;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> GameplayWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UGameplayWidget> GameplayWidget;
 };
