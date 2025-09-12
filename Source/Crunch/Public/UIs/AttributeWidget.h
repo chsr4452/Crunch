@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "AttributeWidget.generated.h"
 
+struct FOnAttributeChangeData;
+struct FGameplayAttribute;
+class UAbilitySystemComponent;
 class UTextBlock;
 class UProgressBar;
 /**
@@ -17,9 +20,15 @@ class CRUNCH_API UAttributeWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	virtual void NativeConstruct() override;
+	void BindToAttribute(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayAttribute& InAttribute, const FGameplayAttribute& InMaxAttribute);
 	void SetProgressBarValue(float NewValue, float NewMaxValue);
 private:
+	void AttrChanged(const FOnAttributeChangeData& ChangedData);
+	void MaxAttrChanged(const FOnAttributeChangeData& ChangedData);
 
+	float CachedValue;
+	float CachedMaxValue;
+	
 	UPROPERTY(EditAnywhere, Category = "Visual")
 	FLinearColor ProgressBarColor;
 	

@@ -23,13 +23,14 @@ class CRUNCH_API UCrunchAttributeSet : public UAttributeSet
 public:
 	
 virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
+	ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, Health);
+    ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, MaxHealth);
+    ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, Mana);
+    ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, MaxMana);
 private:
 	
-	ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, Health);
-	ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, MaxHealth);
-	ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, Mana);
-	ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, MaxMana);
+
 	
 	UPROPERTY(ReplicatedUsing = OnRep_Health)
 	FGameplayAttributeData Health;

@@ -14,6 +14,8 @@ UCLASS()
 class CRUNCH_API UGameplayWidget : public UUserWidget
 {
 	GENERATED_BODY()
+public:
+	virtual void NativeConstruct() override;
 private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UAttributeWidget> HealthBar;
