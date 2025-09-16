@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "CrunchCharacter.generated.h"
 
+class UWidgetComponent;
 class UAttributeSet;
 
 UCLASS()
@@ -19,6 +20,8 @@ public:
 	ACrunchCharacter();
 	void InitAbilityActorInfoOnServer();
 	void InitAbilityActorInfoOnClient();
+
+	virtual void PossessedBy(AController* NewController) override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -26,6 +29,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	bool IsLocallyControlledByPlayer() const;
+private:
 
 	/*******************************************************/
 	/*					Gameplay Ability				   */
@@ -42,4 +47,22 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Ability System")
 	TObjectPtr<UAttributeSet> CrunchAttributeSet;
 
+	/*******************************************************/
+	/*					UI								   */
+	/*******************************************************/
+public:
+	void ConfigOverheadAttrBar();
+private:
+	UPROPERTY(VisibleDefaultsOnly, Category = "UI")
+	TObjectPtr<UWidgetComponent> OverheadAttrBar;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	float OverheadVisibilityPeriod = 1.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	float OverheadVisibilityRangeSquared = 1000000.f;
+	
+	FTimerHandle OverheadAttrBarTimerHandle;
+
+	void UpdateOverheadVisibily();
 };

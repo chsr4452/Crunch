@@ -29,9 +29,7 @@ virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLife
     ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, Mana);
     ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, MaxMana);
 private:
-	
-
-	
+		
 	UPROPERTY(ReplicatedUsing = OnRep_Health)
 	FGameplayAttributeData Health;
 	

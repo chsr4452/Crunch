@@ -16,3 +16,20 @@ void UCrunchAbilitySystemComponent::InitGameplayEffects()
 		ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 	}
 }
+
+void UCrunchAbilitySystemComponent::InitAbilities()
+{
+	if (!GetOwner() || !(GetOwner()->HasAuthority()))
+	{
+		return;
+	}
+	for (const TSubclassOf<UGameplayAbility>& Ability : BasicAbilities)
+	{
+		GiveAbility(FGameplayAbilitySpec(Ability, 1, -1));
+	}
+
+	for (const TSubclassOf<UGameplayAbility>& Ability : AdvanceAbilities)
+	{
+		GiveAbility(FGameplayAbilitySpec(Ability, 0, -1));
+	}
+}

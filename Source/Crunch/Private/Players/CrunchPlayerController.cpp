@@ -30,7 +30,7 @@ void ACrunchPlayerController::AcknowledgePossession(APawn* InPawn)
 
 void ACrunchPlayerController::CreateGameplayWidget()
 {
-	if (!IsLocalController()) return;
+	if (!IsLocalPlayerController()) return;
 	GameplayWidget = CreateWidget<UGameplayWidget>(this, GameplayWidgetClass);
 	if (GameplayWidget)
 	{
