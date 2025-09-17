@@ -23,13 +23,13 @@ void UCrunchAbilitySystemComponent::InitAbilities()
 	{
 		return;
 	}
-	for (const TSubclassOf<UGameplayAbility>& Ability : BasicAbilities)
+	for (const TPair<ECrunchGameplayAbilityID, TSubclassOf<UGameplayAbility>> &Ability : BasicAbilities)
 	{
-		GiveAbility(FGameplayAbilitySpec(Ability, 1, -1));
+		GiveAbility(FGameplayAbilitySpec(Ability.Value, 1, static_cast<int32>(Ability.Key)));
 	}
 
-	for (const TSubclassOf<UGameplayAbility>& Ability : AdvanceAbilities)
+	for (const auto &Ability : AdvanceAbilities)
 	{
-		GiveAbility(FGameplayAbilitySpec(Ability, 0, -1));
+		GiveAbility(FGameplayAbilitySpec(Ability.Value, 0, static_cast<int32>(Ability.Key)));
 	}
 }

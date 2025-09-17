@@ -7,6 +7,7 @@
 #include "CrunchPlayerCharacter.generated.h"
 
 
+enum class ECrunchGameplayAbilityID : uint8;
 class UInputAction;
 class UInputMappingContext;
 class USpringArmComponent;
@@ -48,8 +49,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> IA_Move;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TMap<ECrunchGameplayAbilityID, UInputAction*> GameplayAbilityInputActions;
+	
 	void LookInput(const FInputActionValue& InputActionValue);
 	void MoveInput(const FInputActionValue& InputActionValue);
+	void HandleGameplayAbilityInput(const FInputActionValue& InputActionValue, ECrunchGameplayAbilityID AbilityID);
 
 	FVector GetLookRightDir() const;
 	FVector GetMoveFwdDir() const;

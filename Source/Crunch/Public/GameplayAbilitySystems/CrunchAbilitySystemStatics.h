@@ -3,13 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CrunchAbilitySystemStatics.generated.h"
 
+struct FGameplayTag;
 /**
  * 
  */
-class CRUNCH_API CrunchAbilitySystemStatics
+UCLASS()
+class UCrunchAbilitySystemStatics : public UObject
 {
+	GENERATED_BODY()
 public:
-	CrunchAbilitySystemStatics();
-	~CrunchAbilitySystemStatics();
+static FGameplayTag GetBasicAttackAbilityTag();
 };

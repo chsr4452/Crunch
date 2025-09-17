@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "Abilities/CrunchGameplayAbilityTypes.h"
 #include "CrunchAbilitySystemComponent.generated.h"
 
 /**
@@ -21,8 +22,8 @@ private:
 	TArray<TSubclassOf<UGameplayEffect>> InitialGameplayEffects;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilities")
-	TArray<TSubclassOf<UGameplayAbility>> BasicAbilities;
+	TMap<ECrunchGameplayAbilityID, TSubclassOf<UGameplayAbility>> BasicAbilities;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilities")
-	TArray<TSubclassOf<UGameplayAbility>> AdvanceAbilities;
+	TMap<ECrunchGameplayAbilityID, TSubclassOf<UGameplayAbility>> AdvanceAbilities;
 };

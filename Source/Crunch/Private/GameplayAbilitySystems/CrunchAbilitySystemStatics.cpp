@@ -3,10 +3,9 @@
 
 #include "GameplayAbilitySystems/CrunchAbilitySystemStatics.h"
 
-CrunchAbilitySystemStatics::CrunchAbilitySystemStatics()
-{
-}
+#include "GameplayTagContainer.h"
 
-CrunchAbilitySystemStatics::~CrunchAbilitySystemStatics()
+FGameplayTag UCrunchAbilitySystemStatics::GetBasicAttackAbilityTag()
 {
+	return FGameplayTag::RequestGameplayTag("Ability.BasicAttack");
 }
