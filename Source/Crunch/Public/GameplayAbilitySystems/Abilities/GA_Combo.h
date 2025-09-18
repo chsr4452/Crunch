@@ -18,9 +18,15 @@ public:
 	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	FGameplayTag GetComboChangeEventTag();
+	FGameplayTag GetComboChangeEventTagEnd();
+	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TObjectPtr<UAnimMontage> ComboMontage;
 
-	FGameplayTag GetComboChangeEventTag();
+	UFUNCTION()
+	void OnEventGameplayTaskReceive(FGameplayEventData Data);
+
+	FName NextComboName;
 };
