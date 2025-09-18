@@ -13,5 +13,6 @@ UCLASS()
 class CRUNCH_API UCrunchGameplayAbilityBase : public UGameplayAbility
 {
 	GENERATED_BODY()
-	
+protected:
+	UAnimInstance* GetOwnerAnimInstance() const;
 };

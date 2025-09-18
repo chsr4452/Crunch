@@ -2,10 +2,10 @@
 
 
 #include "GameplayAbilitySystems/Abilities/GA_Combo.h"
-
 #include "GameplayTagsManager.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "Abilities/Tasks/AbilityTask_WaitInputPress.h"
 #include "GameplayAbilitySystems/CrunchAbilitySystemStatics.h"
 
 UGA_Combo::UGA_Combo()
@@ -38,6 +38,7 @@ void UGA_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Ability Activated!"))
+	SetupWaitComboInputPress();
 }
 
 FGameplayTag UGA_Combo::GetComboChangeEventTag()
@@ -48,6 +49,32 @@ FGameplayTag UGA_Combo::GetComboChangeEventTag()
 FGameplayTag UGA_Combo::GetComboChangeEventTagEnd()
 {
 	return FGameplayTag::RequestGameplayTag("Ability.Combo.Change.End");
+}
+
+void UGA_Combo::SetupWaitComboInputPress()
+{
+	UAbilityTask_WaitInputPress* WaitInputPressTask = UAbilityTask_WaitInputPress::WaitInputPress(this);
+	WaitInputPressTask->OnPress.AddDynamic(this, &UGA_Combo::HandleInputPress);
+	WaitInputPressTask->ReadyForActivation();
+}
+
+void UGA_Combo::TryCommitCombo()
+{
+	if (NextComboName == NAME_None) return;
+	if (UAnimInstance* OwnerAnimInstance = GetOwnerAnimInstance())
+	{
+		OwnerAnimInstance->Montage_SetNextSection(
+			OwnerAnimInstance->Montage_GetCurrentSection(ComboMontage),
+			NextComboName,
+			ComboMontage
+			);
+	}
+}
+
+void UGA_Combo::HandleInputPress(float TimeWaited)
+{
+	SetupWaitComboInputPress();
+	TryCommitCombo();
 }
 
 void UGA_Combo::OnEventGameplayTaskReceive(FGameplayEventData Data)
