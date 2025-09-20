@@ -20,11 +20,20 @@ public:
 		const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	FGameplayTag GetComboChangeEventTag();
 	FGameplayTag GetComboChangeEventTagEnd();
+	FGameplayTag GetComboDamageEventTag();
 	
 private:
 	void SetupWaitComboInputPress();
 
 	void TryCommitCombo();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effect")
+	TSubclassOf<UGameplayEffect> DamageEffectDefault;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effect")
+	TMap<FName, TSubclassOf<UGameplayEffect>> DamageEffectMap;
+
+	TSubclassOf<UGameplayEffect> GetDamageEffect() const;
 	
 	UFUNCTION()
 	void HandleInputPress(float TimeWaited);
@@ -34,6 +43,9 @@ private:
 
 	UFUNCTION()
 	void OnEventGameplayTaskReceive(FGameplayEventData Data);
+
+	UFUNCTION()
+	void OnEventDoDamage(FGameplayEventData Data);
 
 	FName NextComboName;
 };

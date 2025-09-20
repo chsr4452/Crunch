@@ -2,6 +2,8 @@
 
 
 #include "GameplayAbilitySystems/Abilities/GA_Combo.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTagsManager.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
@@ -24,7 +26,9 @@ void UGA_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 
 	if (HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
 	{
-		UAbilityTask_PlayMontageAndWait* PlayMontageAndWaitTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(this, TEXT("Combo"), ComboMontage);
+		UAbilityTask_PlayMontageAndWait* PlayMontageAndWaitTask =
+			UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+				this, TEXT("Combo"), ComboMontage);
 		PlayMontageAndWaitTask->OnBlendOut.AddDynamic(this, &UGA_Combo::K2_EndAbility);
 		PlayMontageAndWaitTask->OnCancelled.AddDynamic(this, &UGA_Combo::K2_EndAbility);
 		PlayMontageAndWaitTask->OnCompleted.AddDynamic(this, &UGA_Combo::K2_EndAbility);
@@ -38,6 +42,14 @@ void UGA_Combo::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const F
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Ability Activated!"))
+
+	if (K2_HasAuthority())
+	{
+		UAbilityTask_WaitGameplayEvent* WaitDamageEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this,
+			GetComboDamageEventTag(), nullptr, false, false);
+		WaitDamageEventTask->EventReceived.AddDynamic(this, &UGA_Combo::OnEventDoDamage);
+		WaitDamageEventTask->ReadyForActivation();
+	}
 	SetupWaitComboInputPress();
 }
 
@@ -49,6 +61,11 @@ FGameplayTag UGA_Combo::GetComboChangeEventTag()
 FGameplayTag UGA_Combo::GetComboChangeEventTagEnd()
 {
 	return FGameplayTag::RequestGameplayTag("Ability.Combo.Change.End");
+}
+
+FGameplayTag UGA_Combo::GetComboDamageEventTag()
+{
+	return FGameplayTag::RequestGameplayTag("Ability.Combo.Damage");
 }
 
 void UGA_Combo::SetupWaitComboInputPress()
@@ -71,6 +88,20 @@ void UGA_Combo::TryCommitCombo()
 	}
 }
 
+TSubclassOf<UGameplayEffect> UGA_Combo::GetDamageEffect() const
+{
+	if (UAnimInstance* OwnerAnimInstance = GetOwnerAnimInstance())
+	{
+		FName CurrentSection = OwnerAnimInstance->Montage_GetCurrentSection(ComboMontage);
+		const TSubclassOf<UGameplayEffect>* Effect = DamageEffectMap.Find(CurrentSection);
+		if (Effect)
+		{
+			return *Effect;
+		}
+	}
+	return DamageEffectDefault;
+}
+
 void UGA_Combo::HandleInputPress(float TimeWaited)
 {
 	SetupWaitComboInputPress();
@@ -91,4 +122,19 @@ void UGA_Combo::OnEventGameplayTaskReceive(FGameplayEventData Data)
 	UGameplayTagsManager::Get().SplitGameplayTagFName(EventTag, TagNames);
 	NextComboName = TagNames.Last();
 	UE_LOG(LogTemp, Warning, TEXT("Next Combo: %s"), *NextComboName.ToString());
+}
+
+void UGA_Combo::OnEventDoDamage(FGameplayEventData Data)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnEventDoDamage!"))
+	TArray<FHitResult> HitResults = GetHitResultFromSweep(Data.TargetData, 30.f, true, true);
+
+	for (const FHitResult& HitResult : HitResults)
+	{
+		TSubclassOf<UGameplayEffect> Effect = GetDamageEffect();
+		FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(Effect,
+			GetAbilityLevel(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo()));
+		ApplyGameplayEffectSpecToTarget(GetCurrentAbilitySpecHandle(), CurrentActorInfo, CurrentActivationInfo,
+			GameplayEffectSpecHandle, UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(HitResult.GetActor()));
+	}
 }
