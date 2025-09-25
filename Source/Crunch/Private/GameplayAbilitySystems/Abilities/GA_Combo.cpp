@@ -127,13 +127,19 @@ void UGA_Combo::OnEventGameplayTaskReceive(FGameplayEventData Data)
 void UGA_Combo::OnEventDoDamage(FGameplayEventData Data)
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnEventDoDamage!"))
-	TArray<FHitResult> HitResults = GetHitResultFromSweep(Data.TargetData, 30.f, true, true);
+	TArray<FHitResult> HitResults = GetHitResultFromSweep(Data.TargetData, SphereSweepRadius, bDrawDebug, true);
 
 	for (const FHitResult& HitResult : HitResults)
 	{
 		TSubclassOf<UGameplayEffect> Effect = GetDamageEffect();
 		FGameplayEffectSpecHandle GameplayEffectSpecHandle = MakeOutgoingGameplayEffectSpec(Effect,
 			GetAbilityLevel(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo()));
+
+		FGameplayEffectContextHandle GameplayEffectContextHandle = MakeEffectContext(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo());
+		GameplayEffectContextHandle.AddHitResult(HitResult);
+		GameplayEffectContextHandle.AddInstigator(GetActorInfo().AvatarActor.Get(), GetActorInfo().AvatarActor.Get());
+		GameplayEffectSpecHandle.Data->SetContext(GameplayEffectContextHandle);
+		
 		ApplyGameplayEffectSpecToTarget(GetCurrentAbilitySpecHandle(), CurrentActorInfo, CurrentActivationInfo,
 			GameplayEffectSpecHandle, UAbilitySystemBlueprintLibrary::AbilityTargetDataFromActor(HitResult.GetActor()));
 	}

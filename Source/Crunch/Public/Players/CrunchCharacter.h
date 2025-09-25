@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "CrunchCharacter.generated.h"
 
+struct FGameplayTag;
 class UWidgetComponent;
 class UAttributeSet;
 
@@ -40,7 +41,8 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override {return CrunchAbilitySystemComponent;}
 	
 private:
-	
+	void BindAbilitySystemDelegate();
+	void DeathTagUpdated(const FGameplayTag Tag, int32 NewCount);
 	UPROPERTY(VisibleAnywhere, Category = "Ability System")
 	TObjectPtr<UAbilitySystemComponent> CrunchAbilitySystemComponent;
 	
@@ -65,4 +67,24 @@ private:
 	FTimerHandle OverheadAttrBarTimerHandle;
 
 	void UpdateOverheadVisibily();
+
+	/*******************************************************/
+	/*					Death							   */
+	/*******************************************************/
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Death Montage")
+	TObjectPtr<UAnimMontage> DeathMontage;
+	void PlayDeathMontage();
+	void SetStatusGaugeEnabled(bool bEnabled);
+
+	FTransform MeshInitRelativeTransform;
+	
+	FTimerHandle DeathTimerHandle;
+	void DeathMontageFinished();
+	void SetRagdollEnabled(bool bEnabled);
+	
+	void StartDeath();
+	void Respawn();
+	virtual void OnDead();
+	virtual void OnRespawn();
 };

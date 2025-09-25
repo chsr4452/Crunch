@@ -91,3 +91,21 @@ FVector ACrunchPlayerCharacter::GetMoveFwdDir() const
 {
 	return FVector::CrossProduct(GetLookRightDir(), FVector::UpVector);
 }
+
+void ACrunchPlayerCharacter::OnDead()
+{
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (PlayerController)
+	{
+		DisableInput(PlayerController);
+	}
+}
+
+void ACrunchPlayerCharacter::OnRespawn()
+{
+	APlayerController* PlayerController = GetController<APlayerController>();
+	if (PlayerController)
+	{
+		EnableInput(PlayerController);
+	}
+}

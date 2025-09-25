@@ -21,7 +21,6 @@ class CRUNCH_API UCrunchAttributeSet : public UAttributeSet
 	GENERATED_BODY()
 
 public:
-	
 virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	ATTRIBUTE_ACCESSORS(UCrunchAttributeSet, Health);

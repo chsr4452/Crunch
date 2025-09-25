@@ -15,6 +15,12 @@ class CRUNCH_API UCrunchGameplayAbilityBase : public UGameplayAbility
 	GENERATED_BODY()
 protected:
 	UAnimInstance* GetOwnerAnimInstance() const;
-	TArray<FHitResult> GetHitResultFromSweep(const FGameplayAbilityTargetDataHandle& TargetDataHandle, float SphereSweepRadius = 30.f,
-		bool bDrawDebug = false, bool bIgnoreSelf = true) const;
+	TArray<FHitResult> GetHitResultFromSweep(const FGameplayAbilityTargetDataHandle& TargetDataHandle, float InSphereSweepRadius = 30.f,
+		bool bInDrawDebug = false, bool bIgnoreSelf = true) const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Debug")
+	bool bDrawDebug = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Debug")
+	float SphereSweepRadius = 30.f;
 };

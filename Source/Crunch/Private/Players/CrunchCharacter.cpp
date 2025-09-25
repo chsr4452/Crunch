@@ -1,11 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#pragma once
 
 #include "Crunch/Public/Players/CrunchCharacter.h"
 #include "AbilitySystemComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayAbilitySystems/CrunchAbilitySystemComponent.h"
+#include "GameplayAbilitySystems/CrunchAbilitySystemStatics.h"
 #include "GameplayAbilitySystems/CrunchAttributeSet.h"
 #include "Kismet/GameplayStatics.h"
 #include "UIs/OverheadAttrWidget.h"
@@ -26,7 +30,7 @@ ACrunchCharacter::ACrunchCharacter()
 	OverheadAttrBar->SetDrawAtDesiredSize(true);
 	OverheadAttrBar->SetOnlyOwnerSee(false);
 	OverheadAttrBar->SetOwnerNoSee(false);
-	
+	BindAbilitySystemDelegate();
 }
 
 void ACrunchCharacter::InitAbilityActorInfoOnServer()
@@ -55,7 +59,7 @@ void ACrunchCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	ConfigOverheadAttrBar();
-	
+	MeshInitRelativeTransform = GetMesh()->GetRelativeTransform();
 }
 
 // Called every frame
@@ -68,6 +72,21 @@ void ACrunchCharacter::Tick(float DeltaTime)
 bool ACrunchCharacter::IsLocallyControlledByPlayer() const
 {
 	return GetController() && GetController()->IsLocalPlayerController();
+}
+
+void ACrunchCharacter::BindAbilitySystemDelegate()
+{
+	if (CrunchAbilitySystemComponent)
+	{
+		CrunchAbilitySystemComponent->RegisterGameplayTagEvent(UCrunchAbilitySystemStatics::GetDeathStatusTag()).
+		AddUObject(this, &ACrunchCharacter::DeathTagUpdated);
+	}
+}
+
+void ACrunchCharacter::DeathTagUpdated(const FGameplayTag Tag, int32 NewCount)
+{	UE_LOG(LogTemp, Warning, TEXT("DeathTagUpdated!"));
+	if (NewCount != 0) StartDeath();
+	else Respawn();
 }
 
 void ACrunchCharacter::ConfigOverheadAttrBar()
@@ -97,6 +116,81 @@ void ACrunchCharacter::UpdateOverheadVisibily()
 		float DistSquared = FVector::DistSquared(GetActorLocation(), LocalPlayerPawn->GetActorLocation());
 		OverheadAttrBar->SetHiddenInGame(DistSquared > OverheadVisibilityRangeSquared);
 	}
+}
+
+void ACrunchCharacter::PlayDeathMontage()
+{
+	if (DeathMontage)
+	{
+		float MontageDuration = PlayAnimMontage(DeathMontage);
+		GetWorldTimerManager().SetTimer(DeathTimerHandle, this, &ACrunchCharacter::DeathMontageFinished, MontageDuration - 1.f);
+	}
+}
+
+void ACrunchCharacter::SetStatusGaugeEnabled(bool bEnabled)
+{
+	if (bEnabled)
+	{
+		ConfigOverheadAttrBar();
+	}
+	else
+	{
+		OverheadAttrBar->SetHiddenInGame(true);
+	}
+}
+
+void ACrunchCharacter::DeathMontageFinished()
+{
+	SetRagdollEnabled(true);
+}
+
+void ACrunchCharacter::SetRagdollEnabled(bool bEnabled)
+{
+	if (bEnabled)
+	{
+		GetMesh()->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		GetMesh()->SetSimulatePhysics(true);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	}
+	else
+	{
+		GetMesh()->SetSimulatePhysics(false);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		GetMesh()->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+		GetMesh()->SetRelativeTransform(MeshInitRelativeTransform);
+	}
+}
+
+void ACrunchCharacter::StartDeath()
+{
+	OnDead();
+	PlayDeathMontage();
+	SetStatusGaugeEnabled(false);
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	GetCapsuleComponent()->SetCollisionEnabled((ECollisionEnabled::NoCollision));
+}
+
+void ACrunchCharacter::Respawn()
+{
+	OnRespawn();
+	SetRagdollEnabled(false);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
+	SetStatusGaugeEnabled(true);
+
+	if (GetAbilitySystemComponent())
+	{
+		Cast<UCrunchAbilitySystemComponent>(GetAbilitySystemComponent())->ApplyFullStatEffect();
+	}
+}
+
+void ACrunchCharacter::OnDead()
+{
+}
+
+void ACrunchCharacter::OnRespawn()
+{
 }
 
 

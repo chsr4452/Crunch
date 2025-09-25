@@ -14,5 +14,6 @@ class UCrunchAbilitySystemStatics : public UObject
 {
 	GENERATED_BODY()
 public:
-static FGameplayTag GetBasicAttackAbilityTag();
+	static FGameplayTag GetBasicAttackAbilityTag();
+	static FGameplayTag GetDeathStatusTag();
 };

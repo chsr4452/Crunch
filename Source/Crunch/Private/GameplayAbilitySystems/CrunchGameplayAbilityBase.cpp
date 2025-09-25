@@ -15,7 +15,7 @@ UAnimInstance* UCrunchGameplayAbilityBase::GetOwnerAnimInstance() const
 }
 
 TArray<FHitResult> UCrunchGameplayAbilityBase::GetHitResultFromSweep(
-	const FGameplayAbilityTargetDataHandle& TargetDataHandle, float SphereSweepRadius, bool bDrawDebug,
+	const FGameplayAbilityTargetDataHandle& TargetDataHandle, float InSphereSweepRadius, bool bInDrawDebug,
 	bool bIgnoreSelf) const
 {
 	TArray<FHitResult> OutHitResults;
@@ -34,10 +34,10 @@ TArray<FHitResult> UCrunchGameplayAbilityBase::GetHitResultFromSweep(
 		{
 			ActorsToIgnore.Add(GetAvatarActorFromActorInfo());
 		}
-		EDrawDebugTrace::Type DrawDebugType = bDrawDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
+		EDrawDebugTrace::Type DrawDebugType = bInDrawDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None;
 
 		TArray<FHitResult> Results;
-		UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartLoc, EndLoc, SphereSweepRadius, ObjectTypes,
+		UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartLoc, EndLoc, InSphereSweepRadius, ObjectTypes,
 			false, ActorsToIgnore, DrawDebugType, Results, true);
 
 		for (const FHitResult& HitResult : Results)
