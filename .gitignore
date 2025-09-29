@@ -78,4 +78,7 @@ DerivedDataCache/*
 Content/ParagonCrunch/*
 Content/__ExternalActors__
 Content/__ExternalObjects__
-Content/GameLevels
+Content/Maps
+Content/Megascans
+Content/Models
+Conten/MSPresets

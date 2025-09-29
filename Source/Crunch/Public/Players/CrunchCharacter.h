@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "GenericTeamAgentInterface.h"
 #include "CrunchCharacter.generated.h"
 
 struct FGameplayTag;
@@ -12,7 +13,7 @@ class UWidgetComponent;
 class UAttributeSet;
 
 UCLASS()
-class CRUNCH_API ACrunchCharacter : public ACharacter, public IAbilitySystemInterface
+class CRUNCH_API ACrunchCharacter : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -23,6 +24,7 @@ public:
 	void InitAbilityActorInfoOnClient();
 
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -87,4 +89,15 @@ private:
 	void Respawn();
 	virtual void OnDead();
 	virtual void OnRespawn();
+
+	/*******************************************************/
+	/*					team							   */
+	/*******************************************************/
+public:
+	virtual void SetGenericTeamId(const FGenericTeamId& TeamID) override;
+	virtual FGenericTeamId GetGenericTeamId() const override;
+
+private:
+	UPROPERTY(Replicated)
+	FGenericTeamId GenericTeamId;
 };

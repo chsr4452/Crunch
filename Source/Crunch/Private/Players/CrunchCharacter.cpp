@@ -12,6 +12,7 @@
 #include "GameplayAbilitySystems/CrunchAbilitySystemStatics.h"
 #include "GameplayAbilitySystems/CrunchAttributeSet.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 #include "UIs/OverheadAttrWidget.h"
 
 // Sets default values
@@ -52,6 +53,12 @@ void ACrunchCharacter::PossessedBy(AController* NewController)
 	{
 		InitAbilityActorInfoOnServer();
 	}
+}
+
+void ACrunchCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ACrunchCharacter, GenericTeamId);
 }
 
 // Called when the game starts or when spawned
@@ -178,7 +185,14 @@ void ACrunchCharacter::Respawn()
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	GetMesh()->GetAnimInstance()->StopAllMontages(0.f);
 	SetStatusGaugeEnabled(true);
-
+	if (HasAuthority() && GetController())
+	{
+		TWeakObjectPtr<AActor> StartSpot = GetController()->StartSpot;
+		if (StartSpot.IsValid())
+		{
+			SetActorTransform(StartSpot->GetActorTransform());
+		}
+	}
 	if (GetAbilitySystemComponent())
 	{
 		Cast<UCrunchAbilitySystemComponent>(GetAbilitySystemComponent())->ApplyFullStatEffect();
@@ -191,6 +205,16 @@ void ACrunchCharacter::OnDead()
 
 void ACrunchCharacter::OnRespawn()
 {
+}
+
+void ACrunchCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID)
+{
+	GenericTeamId = NewTeamID;
+}
+
+FGenericTeamId ACrunchCharacter::GetGenericTeamId() const
+{
+	return IGenericTeamAgentInterface::GetGenericTeamId();
 }
 
 

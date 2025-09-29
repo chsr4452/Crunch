@@ -4,6 +4,7 @@
 #include "Players/CrunchPlayerController.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Net/UnrealNetwork.h"
 #include "Players/CrunchPlayerCharacter.h"
 #include "UIs/GameplayWidget.h"
 
@@ -14,6 +15,7 @@ void ACrunchPlayerController::OnPossess(APawn* InPawn)
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->InitAbilityActorInfoOnServer();
+		PlayerCharacter->SetGenericTeamId(GenericTeamId);
 	}
 }
 
@@ -26,6 +28,22 @@ void ACrunchPlayerController::AcknowledgePossession(APawn* InPawn)
 		PlayerCharacter->InitAbilityActorInfoOnClient();
 		CreateGameplayWidget();
 	}
+}
+
+void ACrunchPlayerController::SetGenericTeamId(const FGenericTeamId& TeamID)
+{
+	IGenericTeamAgentInterface::SetGenericTeamId(TeamID);
+}
+
+FGenericTeamId ACrunchPlayerController::GetGenericTeamId() const
+{
+	return IGenericTeamAgentInterface::GetGenericTeamId();
+}
+
+void ACrunchPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ACrunchPlayerController, GenericTeamId);
 }
 
 void ACrunchPlayerController::CreateGameplayWidget()
