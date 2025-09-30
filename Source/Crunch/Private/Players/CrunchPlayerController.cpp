@@ -15,7 +15,7 @@ void ACrunchPlayerController::OnPossess(APawn* InPawn)
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->InitAbilityActorInfoOnServer();
-		PlayerCharacter->SetGenericTeamId(GenericTeamId);
+		PlayerCharacter->SetGenericTeamId(TeamID);
 	}
 }
 
@@ -30,20 +30,20 @@ void ACrunchPlayerController::AcknowledgePossession(APawn* InPawn)
 	}
 }
 
-void ACrunchPlayerController::SetGenericTeamId(const FGenericTeamId& TeamID)
+void ACrunchPlayerController::SetGenericTeamId(const FGenericTeamId& NewTeamID)
 {
-	IGenericTeamAgentInterface::SetGenericTeamId(TeamID);
+	TeamID = NewTeamID;
 }
 
 FGenericTeamId ACrunchPlayerController::GetGenericTeamId() const
 {
-	return IGenericTeamAgentInterface::GetGenericTeamId();
+	return TeamID;
 }
 
 void ACrunchPlayerController::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ACrunchPlayerController, GenericTeamId);
+	DOREPLIFETIME(ACrunchPlayerController, TeamID);
 }
 
 void ACrunchPlayerController::CreateGameplayWidget()

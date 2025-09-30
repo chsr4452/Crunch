@@ -94,10 +94,10 @@ private:
 	/*					team							   */
 	/*******************************************************/
 public:
-	virtual void SetGenericTeamId(const FGenericTeamId& TeamID) override;
+	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override;
 	virtual FGenericTeamId GetGenericTeamId() const override;
 
 private:
-	UPROPERTY(Replicated)
-	FGenericTeamId GenericTeamId;
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Team")
+	FGenericTeamId TeamID;
 };

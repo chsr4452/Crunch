@@ -16,11 +16,12 @@ UAnimInstance* UCrunchGameplayAbilityBase::GetOwnerAnimInstance() const
 
 TArray<FHitResult> UCrunchGameplayAbilityBase::GetHitResultFromSweep(
 	const FGameplayAbilityTargetDataHandle& TargetDataHandle, float InSphereSweepRadius, bool bInDrawDebug,
-	bool bIgnoreSelf) const
+	bool bIgnoreSelf, ETeamAttitude::Type TargetTeam) const
 {
 	TArray<FHitResult> OutHitResults;
 	TSet<AActor*> HitActors;
-	
+
+	const IGenericTeamAgentInterface* OwnerTeamInterface = Cast<IGenericTeamAgentInterface>(GetAvatarActorFromActorInfo());
 	for (const TSharedPtr<FGameplayAbilityTargetData> TargetData : TargetDataHandle.Data)
 	{
 		FVector StartLoc = TargetData->GetOrigin().GetTranslation();
@@ -45,6 +46,14 @@ TArray<FHitResult> UCrunchGameplayAbilityBase::GetHitResultFromSweep(
 			if (HitActors.Contains(HitResult.GetActor()))
 			{
 				continue;
+			}
+			if (OwnerTeamInterface)
+			{
+				ETeamAttitude::Type OtherActorTeamAttitude = OwnerTeamInterface->GetTeamAttitudeTowards(*HitResult.GetActor());
+				if (OtherActorTeamAttitude != TargetTeam)
+				{
+					continue;
+				}
 			}
 			HitActors.Add(HitResult.GetActor());
 			OutHitResults.Add(HitResult);

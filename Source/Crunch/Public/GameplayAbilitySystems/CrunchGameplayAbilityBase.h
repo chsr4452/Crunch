@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "GenericTeamAgentInterface.h""
+#include "GenericTeamAgentInterface.h"
 #include "CrunchGameplayAbilityBase.generated.h"
 
 /**
@@ -17,7 +17,7 @@ class CRUNCH_API UCrunchGameplayAbilityBase : public UGameplayAbility
 protected:
 	UAnimInstance* GetOwnerAnimInstance() const;
 	TArray<FHitResult> GetHitResultFromSweep(const FGameplayAbilityTargetDataHandle& TargetDataHandle, float InSphereSweepRadius = 30.f,
-		bool bInDrawDebug = false, bool bIgnoreSelf = true) const;
+		bool bInDrawDebug = false, bool bIgnoreSelf = true, ETeamAttitude::Type TargetTeam = ETeamAttitude::Hostile) const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Debug")
 	bool bDrawDebug = false;

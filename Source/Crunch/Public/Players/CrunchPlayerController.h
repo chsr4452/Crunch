@@ -39,5 +39,5 @@ private:
 	TObjectPtr<UGameplayWidget> GameplayWidget;
 
 	UPROPERTY(Replicated)
-	FGenericTeamId GenericTeamId;
+	FGenericTeamId TeamID;
 };

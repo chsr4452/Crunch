@@ -58,7 +58,7 @@ void ACrunchCharacter::PossessedBy(AController* NewController)
 void ACrunchCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ACrunchCharacter, GenericTeamId);
+	DOREPLIFETIME(ACrunchCharacter, TeamID);
 }
 
 // Called when the game starts or when spawned
@@ -209,12 +209,12 @@ void ACrunchCharacter::OnRespawn()
 
 void ACrunchCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID)
 {
-	GenericTeamId = NewTeamID;
+	TeamID = NewTeamID;
 }
 
 FGenericTeamId ACrunchCharacter::GetGenericTeamId() const
 {
-	return IGenericTeamAgentInterface::GetGenericTeamId();
+	return TeamID;
 }
 
 
