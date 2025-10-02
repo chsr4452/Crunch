@@ -15,9 +15,10 @@ EBTNodeResult::Type UBTTaskSendInputToASC::ExecuteTask(UBehaviorTreeComponent& O
 			UAbilitySystemComponent* ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(AIController->GetPawn());
 		if (ASC)
 		{
-			
+			ASC->PressInputID(static_cast<int32>(AbilityID));
+			return EBTNodeResult::Succeeded;
 		}
 	}
 
-	return Super::ExecuteTask(OwnerComp, NodeMemory);
+	return EBTNodeResult::Failed;
 }

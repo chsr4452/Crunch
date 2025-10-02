@@ -6,6 +6,7 @@
 #include "BehaviorTree/BTTaskNode.h"
 #include "BTTaskSendInputToASC.generated.h"
 
+enum class ECrunchGameplayAbilityID : uint8;
 /**
  * 
  */
@@ -18,4 +19,5 @@ private:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 	UPROPERTY(EditAnywhere, Category = "Gameplay Ability")
+	ECrunchGameplayAbilityID AbilityID;
 };
