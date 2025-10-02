@@ -8,6 +8,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "CrunchCharacter.generated.h"
 
+class UAIPerceptionStimuliSourceComponent;
 struct FGameplayTag;
 class UWidgetComponent;
 class UAttributeSet;
@@ -100,4 +101,14 @@ public:
 private:
 	UPROPERTY(Replicated, VisibleAnywhere, Category = "Team")
 	FGenericTeamId TeamID;
+
+	/*******************************************************/
+	/*					AI							   */
+	/*******************************************************/
+
+private:
+	void SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled);
+	UPROPERTY()
+	TObjectPtr<UAIPerceptionStimuliSourceComponent> PerceptionStimuliSourceComponent;
+
 };

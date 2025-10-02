@@ -14,6 +14,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "UIs/OverheadAttrWidget.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 // Sets default values
 ACrunchCharacter::ACrunchCharacter()
@@ -32,6 +34,8 @@ ACrunchCharacter::ACrunchCharacter()
 	OverheadAttrBar->SetOnlyOwnerSee(false);
 	OverheadAttrBar->SetOwnerNoSee(false);
 	BindAbilitySystemDelegate();
+
+	PerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>("Perception Stimuli Source");
 }
 
 void ACrunchCharacter::InitAbilityActorInfoOnServer()
@@ -67,6 +71,8 @@ void ACrunchCharacter::BeginPlay()
 	Super::BeginPlay();
 	ConfigOverheadAttrBar();
 	MeshInitRelativeTransform = GetMesh()->GetRelativeTransform();
+
+	PerceptionStimuliSourceComponent->RegisterForSense(UAISense_Sight::StaticClass());
 }
 
 // Called every frame
@@ -175,6 +181,7 @@ void ACrunchCharacter::StartDeath()
 	SetStatusGaugeEnabled(false);
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	GetCapsuleComponent()->SetCollisionEnabled((ECollisionEnabled::NoCollision));
+	SetAIPerceptionStimuliSourceEnabled(false);
 }
 
 void ACrunchCharacter::Respawn()
@@ -197,6 +204,7 @@ void ACrunchCharacter::Respawn()
 	{
 		Cast<UCrunchAbilitySystemComponent>(GetAbilitySystemComponent())->ApplyFullStatEffect();
 	}
+	SetAIPerceptionStimuliSourceEnabled(true);
 }
 
 void ACrunchCharacter::OnDead()
@@ -215,6 +223,19 @@ void ACrunchCharacter::SetGenericTeamId(const FGenericTeamId& NewTeamID)
 FGenericTeamId ACrunchCharacter::GetGenericTeamId() const
 {
 	return TeamID;
+}
+
+void ACrunchCharacter::SetAIPerceptionStimuliSourceEnabled(bool bIsEnabled)
+{
+	if (!PerceptionStimuliSourceComponent) return;
+	if (bIsEnabled)
+	{
+		PerceptionStimuliSourceComponent->RegisterWithPerceptionSystem();
+	}
+	else
+	{
+		PerceptionStimuliSourceComponent->UnregisterFromPerceptionSystem();
+	}
 }
 
 

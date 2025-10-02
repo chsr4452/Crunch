@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "CrunchAIController.generated.h"
 
+struct FAIStimulus;
 class UAISenseConfig_Sight;
 /**
  * 
@@ -28,4 +29,21 @@ private:
 	
 	UPROPERTY(VisibleDefaultsOnly, Category = "Perception")
 	TObjectPtr<UAISenseConfig_Sight> SenseConfig_Sight;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	FName TargetBlackboardKeyName = "Target";
+
+	UFUNCTION()
+	void OnTargetPerceptionUpdated(AActor* InActor, FAIStimulus InStimulus);
+
+	UFUNCTION()
+	void OnTargetForgetton(AActor* InActor);
+
+	const UObject* GetCurrentTarget() const;
+	void SetCurrentTarget(UObject* InTarget);
+
+	AActor* GetNextPerceiveActor() const;
+
+	void ForgetActorIfDead(AActor* ActorToForget);
+	
 };
