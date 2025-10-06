@@ -26,8 +26,6 @@ private:
 	void HealthUpdate(const FOnAttributeChangeData& ChangedData);
 	void AuthApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> InEffect, int Level = 1);
 
-
-
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effects")
 	TSubclassOf<UGameplayEffect> FullStatEffect;
 	
